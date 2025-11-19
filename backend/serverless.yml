@@ -1,0 +1,42 @@
+service: secrets-manager-backend
+
+useDotenv: true 
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: ap-south-1
+  stage: dev
+
+  environment:
+    MONGO_URI: ${env:MONGO_URI}
+    DB_NAME: ${env:DB_NAME}
+    LOCAL_MASTER_KEY: ${env:LOCAL_MASTER_KEY}
+
+functions:
+
+  secretsWrite:
+    handler: handlers/secretsWrite.handler
+    events:
+      - httpApi:
+          path: /secrets
+          method: post
+      - httpApi:
+          path: /secrets/{id}
+          method: put
+      - httpApi:
+          path: /secrets/{id}
+          method: delete
+
+  secretsRead:
+    handler: handlers/secretsRead.handler
+    events:
+      - httpApi:
+          path: /secrets
+          method: get
+      - httpApi:
+          path: /secrets/{id}
+          method: get
+
+plugins:
+  - serverless-dotenv-plugin

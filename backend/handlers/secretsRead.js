@@ -5,7 +5,7 @@ const { decryptSecret } = require("../services/encryptionService");
 
 exports.handler = async (event) => {
   try {
-    const method = event.httpMethod;
+    const method = event.httpMethod || event.requestContext?.http?.method;
     if (method === "GET" && !event.pathParameters?.id) {
       // list metadata only (do not include ciphertext fields)
       const rows = await listSecrets();
